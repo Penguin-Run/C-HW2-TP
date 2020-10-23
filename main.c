@@ -1,16 +1,13 @@
-#include <fcntl.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/mman.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <math.h>
 #include <string.h>
-#include <stdio.h>
 #include <time.h>
-#include <stdlib.h>
 
 size_t get_file_size(char* filename) {
     struct stat st;
@@ -91,7 +88,6 @@ void* thread_routine(void* arg) {
 
     return arg;
 }
-
 // TODO: определять количество потоков в зависимости от возможностей системы
 #define NUM_OF_THREADS 8
 
@@ -150,6 +146,9 @@ void generate_file(char* filename) {
 
 #define NUM_OF_DIFF 11
 
+// TODO: в тестах настроить замер времени работы через chrono в тестах
+// TODO: поставить cppcheck и valgrind в clion
+
 int main() {
     char* filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/book.txt";
 
@@ -160,10 +159,8 @@ int main() {
 
     int* diff_count = calloc(NUM_OF_DIFF, sizeof(int));
 
-    clock_t start = clock();
     // find_diff_consecutive(region, diff_count, NUM_OF_DIFF);
     find_diff_parallel(region, get_file_size(filename), diff_count, NUM_OF_DIFF);
-    clock_t stop = clock();
 
     for (int i = 0; i < NUM_OF_DIFF; i++) printf("Pairs with byte difference %d: %d\n", i, diff_count[i]);
 
@@ -173,7 +170,5 @@ int main() {
         printf("munmap failed\n");
     }
 
-    double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
-    printf("\nTime elapsed: %.5f\n", elapsed);
     return 0;
 }
