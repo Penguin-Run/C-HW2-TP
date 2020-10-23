@@ -6,7 +6,18 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <math.h>
+#include <string.h>
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 
+size_t get_file_size(char* filename) {
+    struct stat st;
+    stat(filename, &st);
+
+    return st.st_size;
+}
 
 char* load_file(char* filename) {
     FILE *f;
@@ -15,19 +26,11 @@ char* load_file(char* filename) {
         return NULL;
     }
     int fd = fileno(f);
-    struct stat st;
-    stat(filename, &st);
-
-    size_t file_size = st.st_size;
-
-    // PROT_READ - чтение; PROT_WRITE - чтение/запись
-    // MAP_PRIVATE - не записывать в файл;
-    // MAP_POPULATE - предзагрузка файла ядром;
-    // MAP_SHARED - деление с другими процессами
+    size_t file_size = get_file_size(filename);
     char *region = mmap(NULL,
                         file_size,
-                        PROT_READ | PROT_WRITE,
-                        MAP_PRIVATE, // MAP_POPULATE missing !!
+                        PROT_WRITE,
+                        MAP_PRIVATE,
                         fd,
                         0);
     if (region == MAP_FAILED) {
@@ -35,17 +38,6 @@ char* load_file(char* filename) {
         close(fd);
         return NULL;
     }
-
-    // printf("What was read:\n%d\n", region[2]);
-    // write(fileno(stdout), region, file_size);
-    // fileno(stdout) == 1
-
-    // TODO: очистить mmap память
-    /*
-    if (munmap(region, file_size) != 0) {
-        printf("munmap failed\n");
-    }
-     */
 
     close(fd);
     return region;
@@ -72,50 +64,116 @@ void find_diff_consecutive(char* region, int* diff_count, int num_of_diff) {
         }
         diff_count[i] = count;
     }
-
-
 }
 
-void* thread_routine(void* arg) {
-    int errflag = 0;
-    // detach from main process as a POSIX thread until the end
-    errflag = pthread_detach(pthread_self());
-    // check if pthread_detach() call was successful
-    if (errflag != 0) {
-        printf("Thread: caught error: %d\n", errflag);
-    }
+typedef struct data_chunk {
+    char* data;
+    size_t size;
+    int num_of_diff;
+    int* diff_count;
+} data_chunk;
 
-    printf("I'm a new thread!\n");
+void* thread_routine(void* arg) {
+    data_chunk* chunk = (data_chunk*) arg;
+
+    // сравниваем только тот участок, что был выделен этому потоку
+    int size = chunk->size;
+    // если потоку достался конец данных - проходимся до его окончания, а не до chunk->size
+    if (strlen(chunk->data) <= chunk->size) size = (int)strlen(chunk->data) - 1;
+
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < chunk->num_of_diff; j++) {
+            // сравниваем пары в чанке + сравниваем граничное значение со следующим чанком (чтобы не потерять пару)
+            if (abs(chunk->data[i] - chunk->data[i+1]) == j)
+                chunk->diff_count[j]++;
+        }
+    }
 
     return arg;
 }
 
-void find_diff_parallel(char* region, int* diff_count, int num_of_diff) {
-    int err_flag = 0;
-    pthread_t thread; // thread id
+// TODO: определять количество потоков в зависимости от возможностей системы
+#define NUM_OF_THREADS 8
 
-    // create and tun POSIX thread
-    err_flag = pthread_create(&thread, NULL, thread_routine, NULL);
-    // check if thread_create call was successful
-    if (err_flag != 0) {
-        printf("Main: caught error: %d\n", err_flag);
+void find_diff_parallel(char* region, size_t file_size, int* diff_count, int num_of_diff) {
+    pthread_t threads[NUM_OF_THREADS]; // thread id
+    for (int i = 0; i < NUM_OF_THREADS; i++) {
+        data_chunk* chunk = calloc(1, sizeof(data_chunk));
+        // разделяем данные файла между потоками на чанки размером data_chunk_size
+        chunk->size = (size_t)ceil((double)file_size / NUM_OF_THREADS);
+        // отдаем каждому потоку его секцию данных
+        chunk->data = region + i * chunk->size;
+        chunk->num_of_diff = num_of_diff;
+        chunk->diff_count = calloc(num_of_diff, sizeof(int));
+
+        // create and run POSIX thread
+        int err_flag = 0;
+        err_flag = pthread_create(&threads[i], NULL, thread_routine, chunk);
+        // check if thread_create call was successful
+        if (err_flag != 0) {
+            printf("Main: caught error: %d\n", err_flag);
+        }
     }
 
-    printf("I'm main thread!\n");
+    // wait for threads to complete work
+    for (int i = 0; i < NUM_OF_THREADS; i++) {
+        void* return_value;
+        int err_flag = pthread_join(threads[i], &return_value);
+        if (err_flag != 0) {
+            printf("Main: caught error %d while joining thread\n", err_flag);
+        }
+        data_chunk* chunk = (data_chunk*) return_value;
+
+        // добавляем результат вычислений потока в общий результат
+        for (int j = 0; j < num_of_diff; j++) {
+            diff_count[j] += chunk->diff_count[j];
+        }
+
+        // чистим память выделенную под чанк
+        free(chunk->diff_count);
+        free(chunk);
+    }
+}
+
+// doesn't work properly
+void generate_file(char* filename) {
+    FILE* f;
+    if((f = fopen(filename, "w")) == NULL) {
+        printf ("Cannot create file.\n");
+        return;
+    }
+    fputs("dddddddddd", f);
+
+    int fd = fileno(f);
+    close(fd);
 }
 
 #define NUM_OF_DIFF 11
 
 int main() {
-    char* region = load_file("/Users/Ivan/TPark-SEM1/C-HW2-TP/testfile");
-    print_bytes(region);
+    char* filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/book.txt";
+
+    char* region = load_file(filename); // allocate mmap!
+    int size = (int) get_file_size(filename);
+    printf("Size of file: %d\n", size);
+    // print_bytes(region);
 
     int* diff_count = calloc(NUM_OF_DIFF, sizeof(int));
-    find_diff_consecutive(region, diff_count, NUM_OF_DIFF);
-    // find_diff_parallel(region, diff_count, NUM_OF_DIFF);
+
+    clock_t start = clock();
+    // find_diff_consecutive(region, diff_count, NUM_OF_DIFF);
+    find_diff_parallel(region, get_file_size(filename), diff_count, NUM_OF_DIFF);
+    clock_t stop = clock();
 
     for (int i = 0; i < NUM_OF_DIFF; i++) printf("Pairs with byte difference %d: %d\n", i, diff_count[i]);
 
     free(diff_count);
+    // очищение mmap памяти
+    if (munmap(region, get_file_size(filename)) != 0) {
+        printf("munmap failed\n");
+    }
+
+    double elapsed = (double) (stop - start) / CLOCKS_PER_SEC;
+    printf("\nTime elapsed: %.5f\n", elapsed);
     return 0;
 }
