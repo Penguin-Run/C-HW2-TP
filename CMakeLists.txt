@@ -3,4 +3,6 @@ project(C_HW2_TP C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(C_HW2_TP main.c)
+
+
+add_executable(C_HW2_TP main.c src/IO_manager.c include/IO_manager.h src/parallel_work.c include/parallel_work.h src/consecutive_work.c include/consecutive_work.h)
