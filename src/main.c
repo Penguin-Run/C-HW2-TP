@@ -1,12 +1,14 @@
-#include "include/IO_manager.h"
-#include "include/parallel_work.h"
-#include "include/consecutive_work.h"
+#include "../include/IO_manager.h"
+#include "../include/parallel_work.h"
+#include "../include/consecutive_work.h"
 
 #define NUM_OF_DIFF 11
+// TODO: убрать thread_routine из хэдэра ведь он не паблик (или все таки не получится?)
 // TODO: в тестах настроить замер времени работы через chrono
 
 int main() {
-    char* filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/book.txt";
+    // char* filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/book.txt";
+    char* filename = "/Users/penguin/TPark-SEM1/C-HW2-TP/test_data/book.txt";
 
     char* region = load_file(filename); // allocate mmap!
     int size = (int) get_file_size(filename);
