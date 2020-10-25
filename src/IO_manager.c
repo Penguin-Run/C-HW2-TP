@@ -41,7 +41,7 @@ void print_bytes(char* string) {
     printf("\n");
 }
 
-// doesn't work properly
+// TODO: доделать функцию генерации файла
 void generate_file(char* filename) {
     FILE* f;
     if((f = fopen(filename, "w")) == NULL) {
@@ -57,7 +57,7 @@ void generate_file(char* filename) {
 void print_result(const char* filename_output, int* diff_count) {
     FILE* f = fopen(filename_output, "w");
     if (!f) {
-        fprintf(stderr, "Failed to open file for write. Using default output stream..\n");
+        printf("Failed to open file for write the result. Using default output stream..\n");
         f = stdout;
     }
 

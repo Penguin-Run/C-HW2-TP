@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <math.h>
+#include <sys/types.h>
+#include <sys/sysctl.h>
 
 #include <stdlib.h>
 
@@ -34,14 +36,33 @@ void* thread_routine(void* arg) {
     return arg;
 }
 // TODO: определять количество потоков в зависимости от возможностей системы
-#define NUM_OF_THREADS 8
+
+// возвращает количество ядер процессора системы
+int get_max_processes_of_system() {
+    char* mib_id = "machdep.cpu.core_count"; // MIB ID to get number of CPU cores
+    int cpu_cores = -1;
+    size_t len = sizeof(cpu_cores);
+    int if_success = sysctlbyname(mib_id, &cpu_cores, &len, NULL, 0);
+    if (if_success == -1) {
+        return -1;
+    }
+
+    return cpu_cores;
+}
 
 void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff) {
-    pthread_t threads[NUM_OF_THREADS]; // thread id
-    for (int i = 0; i < NUM_OF_THREADS; i++) {
+    // ставлю количество потоков в зависимости от количества ядер процессора
+    int num_of_threads = get_max_processes_of_system();
+    if (num_of_threads == -1) {
+        fprintf(stderr, "error while getting info about maximum number of processes in the system\n");
+        return;
+    }
+
+    pthread_t threads[num_of_threads]; // thread id
+    for (int i = 0; i < num_of_threads; i++) {
         data_chunk* chunk = calloc(1, sizeof(data_chunk));
         // разделяем данные файла между потоками на чанки размером data_chunk_size
-        chunk->size = (size_t)ceil((double)file_size / NUM_OF_THREADS);
+        chunk->size = (size_t)ceil((double)file_size / num_of_threads);
         // отдаем каждому потоку его секцию данных
         chunk->data = region + i * chunk->size;
         chunk->num_of_diff = num_of_diff;
@@ -57,7 +78,7 @@ void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff)
     }
 
     // wait for threads to complete work
-    for (int i = 0; i < NUM_OF_THREADS; i++) {
+    for (int i = 0; i < num_of_threads; i++) {
         void* return_value;
         int err_flag = pthread_join(threads[i], &return_value);
         if (err_flag != 0) {
