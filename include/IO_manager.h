@@ -1,7 +1,3 @@
-//
-// Created by Иван on 24.10.2020.
-//
-
 #ifndef C_HW2_TP_IO_MANAGER_H
 #define C_HW2_TP_IO_MANAGER_H
 

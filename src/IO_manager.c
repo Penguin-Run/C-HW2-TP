@@ -62,6 +62,8 @@ void print_result(const char* filename_output, int* diff_count) {
 
     for (int i = 0; i < NUM_OF_DIFF_COUNT; i++)
         fprintf(f, "Pairs with byte difference %d: %d\n", i, diff_count[i]);
+
+    fclose(f);
 }
 
 void work_from_file(const char* filename_input, const char* filename_output) {
