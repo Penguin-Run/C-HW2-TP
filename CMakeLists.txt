@@ -4,7 +4,7 @@ project(C_HW2_TP)
 set(PROJECT_NAME C_HW2_TP)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -FPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wshadow -fPIC")
 
 set(ALL_SOURCE_FILES
         main.c
@@ -28,9 +28,8 @@ set(HEADER_FILES_STATIC_LIB
         )
 
 add_library(${STATIC_LIB} STATIC ${SOURCE_FILES_STATIC_LIB})
-target_link_libraries(${STATIC_LIB}) # !!! try to remove this command
-target_include_directories(${STATIC_LIB} PUBLIC include) # !!! try to do separate folder like serg
-# !!! try to remove work.h and include work.c in io_manager
+target_link_libraries(${STATIC_LIB}) # !!!
+target_include_directories(${STATIC_LIB} PUBLIC include) # !!!
 
 #------------------------end-static-lib---------------------
 
@@ -49,7 +48,7 @@ set(HEADER_FILES_DYNAMIC_LIB
 
 set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON ) # !!!
 add_library(${DYNAMIC_LIB} SHARED ${SOURCE_FILES_DYNAMIC_LIB})
-target_link_libraries(${DYNAMIC_LIB}) # !!! try to remove this command
+target_link_libraries(${DYNAMIC_LIB}) # !!!
 target_include_directories(${DYNAMIC_LIB} PUBLIC include)
 
 #------------------------end-dynamic-lib---------------------
@@ -97,10 +96,10 @@ endif()
 #----------------------------include-test-----------------------------
 
 add_executable(test_consecutive ${UNIT_TESTS})
-target_link_libraries(test_consecutive gtest gtest_main rt pthread ${STATIC_LIB})
+target_link_libraries(test_consecutive gtest gtest_main pthread ${STATIC_LIB})
 
 add_executable(test_parallel ${UNIT_TESTS})
-target_link_libraries(test_parallel gtest gtest_main rt pthread ${DYNAMIC_LIB})
+target_link_libraries(test_parallel gtest gtest_main pthread ${DYNAMIC_LIB})
 
 #----------------------------end-include-test-----------------------------
 
