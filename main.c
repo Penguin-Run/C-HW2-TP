@@ -1,29 +1,11 @@
 #include "include/IO_manager.h"
-#include "include/work.h"
 
-#define NUM_OF_DIFF 11
 // TODO: в тестах настроить замер времени работы через chrono
 
 int main() {
-    char* filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/book.txt";
 
-    char* region = load_file(filename); // allocate mmap!
-    int size = (int) get_file_size(filename);
-    printf("Size of file: %d\n", size);
-    // print_bytes(region);
-
-    int* diff_count = (int*) calloc(NUM_OF_DIFF, sizeof(int));
-
-    // find_diff_consecutive(region, diff_count, NUM_OF_DIFF);
-    find_diff(region, get_file_size(filename), diff_count, NUM_OF_DIFF);
-
-    for (int i = 0; i < NUM_OF_DIFF; i++) printf("Pairs with byte difference %d: %d\n", i, diff_count[i]);
-
-    free(diff_count);
-    // очищение mmap памяти
-    if (munmap(region, get_file_size(filename)) != 0) {
-        printf("munmap failed\n");
-    }
+    // NULL == stdout by default
+    work_from_file("/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/book.txt", NULL);
 
     return 0;
 }

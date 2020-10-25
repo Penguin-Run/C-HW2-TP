@@ -5,6 +5,8 @@
 #include <pthread.h>
 #include <math.h>
 
+#include <stdlib.h>
+
 typedef struct data_chunk {
     char* data;
     size_t size;
