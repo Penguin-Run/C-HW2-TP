@@ -1,6 +1,5 @@
 #include "include/IO_manager.h"
-#include "include/parallel_work.h"
-#include "include/consecutive_work.h"
+#include "include/work.h"
 
 #define NUM_OF_DIFF 11
 // TODO: в тестах настроить замер времени работы через chrono
@@ -13,10 +12,10 @@ int main() {
     printf("Size of file: %d\n", size);
     // print_bytes(region);
 
-    int* diff_count = calloc(NUM_OF_DIFF, sizeof(int));
+    int* diff_count = (int*) calloc(NUM_OF_DIFF, sizeof(int));
 
     // find_diff_consecutive(region, diff_count, NUM_OF_DIFF);
-    find_diff_parallel(region, get_file_size(filename), diff_count, NUM_OF_DIFF);
+    find_diff(region, get_file_size(filename), diff_count, NUM_OF_DIFF);
 
     for (int i = 0; i < NUM_OF_DIFF; i++) printf("Pairs with byte difference %d: %d\n", i, diff_count[i]);
 

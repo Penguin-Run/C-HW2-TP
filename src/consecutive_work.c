@@ -1,6 +1,8 @@
-#include "../include/consecutive_work.h"
+#include "../include/work.h"
 
-void find_diff_consecutive(char* region, int* diff_count, int num_of_diff) {
+// TODO: use file_size in for loop (?)
+
+void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff) {
     for (int i = 0; i < num_of_diff; i++) {
         int count = 0;
         int j = 1;

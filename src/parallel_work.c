@@ -1,4 +1,17 @@
-#include "../include/parallel_work.h"
+#include "../include/work.h"
+
+#include <string.h>
+#include <stdio.h>
+#include <pthread.h>
+#include <math.h>
+
+typedef struct data_chunk {
+    char* data;
+    size_t size;
+    int num_of_diff;
+    int* diff_count;
+} data_chunk;
+
 
 void* thread_routine(void* arg) {
     data_chunk* chunk = (data_chunk*) arg;
@@ -21,7 +34,7 @@ void* thread_routine(void* arg) {
 // TODO: определять количество потоков в зависимости от возможностей системы
 #define NUM_OF_THREADS 8
 
-void find_diff_parallel(char* region, size_t file_size, int* diff_count, int num_of_diff) {
+void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff) {
     pthread_t threads[NUM_OF_THREADS]; // thread id
     for (int i = 0; i < NUM_OF_THREADS; i++) {
         data_chunk* chunk = calloc(1, sizeof(data_chunk));
