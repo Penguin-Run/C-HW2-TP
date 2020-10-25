@@ -41,17 +41,16 @@ void print_bytes(char* string) {
     printf("\n");
 }
 
-// TODO: доделать функцию генерации файла
-void generate_file(char* filename) {
-    FILE* f;
-    if((f = fopen(filename, "w")) == NULL) {
-        printf ("Cannot create file.\n");
-        return;
-    }
-    fputs("dddddddddd", f);
+// записывает случайную последовательность симолов размера bytes байтов в файл test_data/generated_file
+void generate_file(int num_of_bytes) {
+    char* generated_file_name = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file";
+    FILE* file = fopen(generated_file_name, "w");
 
-    int fd = fileno(f);
-    close(fd);
+    for (int i = 0; i < num_of_bytes; i++) {
+        int random_symbol = (41 + rand() % 86); // from 41 to 126
+        fputc(random_symbol, file);
+    }
+    fclose(file);
 }
 
 void print_result(const char* filename_output, int* diff_count) {

@@ -35,7 +35,6 @@ void* thread_routine(void* arg) {
 
     return arg;
 }
-// TODO: определять количество потоков в зависимости от возможностей системы
 
 // возвращает количество ядер процессора системы
 int get_max_processes_of_system() {
@@ -51,6 +50,7 @@ int get_max_processes_of_system() {
 }
 
 void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff) {
+    printf( "PARALLEL\n");
     // ставлю количество потоков в зависимости от количества ядер процессора
     int num_of_threads = get_max_processes_of_system();
     if (num_of_threads == -1) {
