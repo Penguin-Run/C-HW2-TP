@@ -1,40 +1,37 @@
 jobs:
   build:
     docker:
-      - image: "ubuntu:rolling"
+      - image: "debian:stretch"
     steps:
       - checkout
-      - run:
-          name: Installing SUDO
-          command: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
-      - run:
-          name: Installing GCC
-          command: 'apt-get update && apt-get install -y gcc g++'
-      - run:
-          name: Installing CppCheck
-          command: 'apt-get update && apt-get install -y cppcheck'
-      - run:
-          name: Installing Valgrind
-          command: 'apt-get update && apt-get install -y valgrind'
-      - run:
-          name: Install CMAKE
-          command: 'apt-get update && sudo apt-get install -y cmake'
-      - run:
-          name: Installing Gcovr
-          command: 'apt-get update && apt-get install -y gcovr'
-      - run:
-          name: Creating Build Files
-          command: 'mkdir build && cd build &&
-                    cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS=--coverage -DCMAKE_C_FLAGS=--coverage -G "CodeBlocks - Unix Makefiles" .. && ls -la'
-      - run:
-          name: Creating Binary Files
-          command: 'cmake --build build --target Google_Tests_run -- -j 6 && ls -la'
+      - run: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
+      - run: 'apt-get update && apt-get install -y gcc g++'
+      - run: 'apt-get update && apt-get install -y cppcheck'
+      - run: 'apt-get update && apt-get install -y valgrind'
+      - run: 'apt-get update && sudo apt-get install -y cmake'
+      - run: 'apt-get update && apt-get install -y gcovr'
+
+
+      - run: ls -la && mkdir iz-2/build && cd iz-2/build &&
+          cmake .. && ls -la
+      - run: cmake --build iz-2/build --target test_consecutive -- -j 6
+      - run: cmake --build iz-2/build --target test_parallel -- -j 6
+      - run: cmake --build iz-2/build --target C_HW2_TP -- -j 6
+
+
       - run:
           name: Start CppCheck
           command: 'ls -la && ls -la && cppcheck src/*  unit_tests/*'
+
       - run:
-          name: Start Tests With Valgrind
-          command: 'valgrind build/Google_tests/Google_Tests_run'
+          name: Start Tests Static Library With Valgrind
+          command: 'valgrind build/test_consecutive --gtest_filter=* --gtest_color=no'
+
+      - run:
+          name: Start Tests Dynamic Library With Valgrind
+          command: 'valgrind build/test_parallel --gtest_filter=* --gtest_color=no'
+
+
       - run:
           name: Gcovr
           command: 'gcovr -r .'
