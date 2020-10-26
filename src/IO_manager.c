@@ -1,5 +1,6 @@
 #include "../include/IO_manager.h"
 
+
 size_t get_file_size(const char* filename) {
     struct stat st;
     stat(filename, &st);
@@ -41,7 +42,21 @@ void print_bytes(char* string) {
     printf("\n");
 }
 
+// записывает случайную последовательность симолов размера bytes байтов в файл test_data/generated_file_random
+void generate_random_file(int num_of_bytes) {
+    char* generated_file_name = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file_random";
+    FILE* file = fopen(generated_file_name, "w");
+
+    srand(time(0));
+    for (int i = 0; i < num_of_bytes; i++) {
+        int random_symbol = (41 + rand() % 86); // from 41 to 126
+        fputc(random_symbol, file);
+    }
+    fclose(file);
+}
+
 // записывает случайную последовательность симолов размера bytes байтов в файл test_data/generated_file
+// случайная последовательность повторяется
 void generate_file(int num_of_bytes) {
     char* generated_file_name = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file";
     FILE* file = fopen(generated_file_name, "w");

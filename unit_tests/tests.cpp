@@ -6,12 +6,13 @@
 extern "C" {
 #include "../include/IO_manager.h"
 }
-// TODO: сделать еще одну функцию генерации файла где будет рандом каждый раз для стресс тестов
 
-// TODO: try to fix SIGSEGV by running from another process
-TEST(Test_work_from_file_func, stress_test) {
+#define MEGABYTE_IN_BYTES 1000000
+
+// work correctly with test_consecutive build
+TEST(Test_work_from_file_func, stress_test_100mb) {
     void *library; // объект для привязки внешней библиотеки
-    int (*work_from_file)(const char* filename_input, const char* filename_output);
+    int (*work_from_file_parallel)(const char* filename_input, const char* filename_output);
 
     library = dlopen("/Users/Ivan/TPark-SEM1/C-HW2-TP/cmake-build-debug/libparallel_work_lib.dylib", RTLD_LAZY); // !!!!
     if (!library) {
@@ -20,14 +21,44 @@ TEST(Test_work_from_file_func, stress_test) {
     }
 
     // загрузка функции
-    work_from_file = (int (*)(const char *, const char *)) (dlsym(library, "int_work_from_file"));
+    void* func = dlsym(library, "work_from_file");
+    work_from_file_parallel = (int (*)(const char *, const char *)) func;
 
-    const char* input_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/small_file";
-    const char* output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/small_file_results";
-    int res = (*work_from_file)(input_filename, output_filename);
-    const int EXPECTED = 0;
 
-    ASSERT_EQ(EXPECTED, res);
+    // генерация файла случайных символов на 100 мегабайт
+    generate_random_file(MEGABYTE_IN_BYTES * 100);
+    const char* input_filename =
+            "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file_random";
+    const char* output_filename_consecutive =
+            "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/stress_tests/results_consecutive";
+    const char* output_filename_parallel =
+            "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/stress_tests/results_parallel";
+
+    // вызов последовательной и параллельной реализации
+    work_from_file(input_filename, output_filename_consecutive);
+    (*work_from_file_parallel)(input_filename, output_filename_parallel);
+
+    std::ifstream consecutive_output(output_filename_consecutive);
+    std::ifstream parallel_output(output_filename_parallel);
+    if (!consecutive_output.is_open() || !parallel_output.is_open())
+    {
+        std::cerr << "TEST Failed to open file";
+        consecutive_output.close();
+        parallel_output.close();
+        ASSERT_TRUE(false);
+    }
+
+
+    std::string line1;
+    std::string line2;
+    while (getline(consecutive_output, line1) && getline(parallel_output, line2)) {
+        ASSERT_TRUE(line1 == line2);
+    }
+
+    consecutive_output.close();
+    parallel_output.close();
+
+    dlclose(library);
 }
 
 TEST(Test_work_from_file_func, small_file){
@@ -87,9 +118,14 @@ TEST(Test_work_from_file_func, medium_file) {
     expected_output.close();
 }
 
-#define MEGABYTE_IN_BYTES 1000000
 TEST(Test_work_from_file_func, big_file_100mb_generated) {
     // generate_file(MEGABYTE_IN_BYTES*100);
+    /*
+     * to generate new pseudo-random file and run test correctly:
+     * - invoke generate_file(MEGABYTE_IN_BYTES*100); once
+     * - paste result from any algorythm
+     * from test_data/test_results/generated_file_results to test_data/expected_results/generated_file_results
+     */
     const char* input_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file";
     const char* output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/generated_file_results";
     const char* expected_output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/expected_results/generated_file_results";

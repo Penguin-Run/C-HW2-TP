@@ -11,7 +11,9 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include<time.h>
 
+void generate_random_file(int num_of_bytes);
 void generate_file(int num_of_bytes);
 
 int work_from_file(const char* filename_input, const char* filename_output);
