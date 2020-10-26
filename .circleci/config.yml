@@ -1,7 +1,7 @@
 jobs:
   build:
     docker:
-      - image: "debian:stretch"
+      - image: "debian:latest"
     steps:
       - checkout
       - run:
