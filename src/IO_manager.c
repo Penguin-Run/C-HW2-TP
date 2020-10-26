@@ -10,7 +10,7 @@ size_t get_file_size(const char* filename) {
 char* load_file(const char* filename) {
     FILE *f;
     if((f = fopen(filename, "r")) == NULL) {
-        printf ("Cannot open file.\n");
+        printf ("Cannot open file\n");
         return NULL;
     }
     int fd = fileno(f);
@@ -66,11 +66,15 @@ void print_result(const char* filename_output, int* diff_count) {
     fclose(f);
 }
 
-void work_from_file(const char* filename_input, const char* filename_output) {
+int work_from_file(const char* filename_input, const char* filename_output) {
     char* region = load_file(filename_input); // allocate mmap!
+    if (region == NULL) {
+        fprintf(stderr, "error while loading file and allocating memory for it with mmap\n");
+        return -1;
+    }
+
     int size = (int) get_file_size(filename_input);
     printf("Size of file: %d\n", size);
-    // print_bytes(region);
 
     int* diff_count = (int*) calloc(NUM_OF_DIFF_COUNT, sizeof(int));
 
@@ -81,8 +85,11 @@ void work_from_file(const char* filename_input, const char* filename_output) {
     free(diff_count);
     // очищение mmap памяти
     if (munmap(region, get_file_size(filename_input)) != 0) {
-        printf("munmap failed\n");
+        fprintf(stderr, "munmap failed\n");
+        return -1;
     }
+
+    return 0;
 }
 
 
