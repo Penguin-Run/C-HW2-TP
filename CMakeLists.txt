@@ -105,6 +105,9 @@ target_link_libraries(test_parallel gtest gtest_main pthread ${DYNAMIC_LIB})
 
 #---------------------------end-google-tests---------------------------
 
-add_executable(${PROJECT_NAME} ${ALL_SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} ${DYNAMIC_LIB})
+add_executable(${PROJECT_NAME}_consecutive ${ALL_SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME}_consecutive ${STATIC_LIB})
+
+add_executable(${PROJECT_NAME}_parallel ${ALL_SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME}_parallel ${DYNAMIC_LIB})
 

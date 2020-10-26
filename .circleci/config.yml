@@ -17,7 +17,8 @@ jobs:
           cmake .. && ls -la
       - run: cmake --build build --target test_consecutive -- -j 6
       - run: cmake --build build --target test_parallel -- -j 6
-      - run: cmake --build build --target C_HW2_TP -- -j 6
+      - run: cmake --build build --target C_HW2_TP_consecutive -- -j 6
+      - run: cmake --build build --target C_HW2_TP_parallel -- -j 6
 
 
       - run:
