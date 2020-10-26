@@ -12,11 +12,11 @@ jobs:
       - run: 'apt-get update && apt-get install -y gcovr'
 
 
-      - run: ls -la && mkdir iz-2/build && cd iz-2/build &&
+      - run: ls -la && mkdir build && cd build &&
           cmake .. && ls -la
-      - run: cmake --build iz-2/build --target test_consecutive -- -j 6
-      - run: cmake --build iz-2/build --target test_parallel -- -j 6
-      - run: cmake --build iz-2/build --target C_HW2_TP -- -j 6
+      - run: cmake --build build --target test_consecutive -- -j 6
+      - run: cmake --build build --target test_parallel -- -j 6
+      - run: cmake --build build --target C_HW2_TP -- -j 6
 
 
       - run:
