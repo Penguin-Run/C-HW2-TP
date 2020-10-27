@@ -27,11 +27,11 @@ jobs:
 
       - run:
           name: Start Tests Static Library With Valgrind
-          command: 'valgrind build/test_consecutive --gtest_filter=* --gtest_color=no'
+          command: 'cd build && valgrind ./test_consecutive --gtest_filter=* --gtest_color=no'
 
       - run:
           name: Start Tests Dynamic Library With Valgrind
-          command: 'valgrind build/test_parallel --gtest_filter=* --gtest_color=no'
+          command: 'cd build && valgrind ./test_parallel --gtest_filter=* --gtest_color=no'
 
 
       - run:
