@@ -14,7 +14,7 @@ TEST(Stress_test, stress_test_100mb) {
     void *library; // объект для привязки внешней библиотеки
     int (*work_from_file_parallel)(const char* filename_input, const char* filename_output);
 
-    library = dlopen("../cmake-build-debug/libparallel_work_lib.dylib", RTLD_LAZY); // try ../build/lib...
+    library = dlopen("./libparallel_work_lib.dylib", RTLD_LAZY); // try ../build/lib...
     if (!library) {
         fprintf(stderr, "library opening failed");
         ASSERT_TRUE(false);
