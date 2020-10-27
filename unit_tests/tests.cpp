@@ -14,7 +14,7 @@ TEST(Stress_test, stress_test_100mb) {
     void *library; // объект для привязки внешней библиотеки
     int (*work_from_file_parallel)(const char* filename_input, const char* filename_output);
 
-    library = dlopen("/Users/Ivan/TPark-SEM1/C-HW2-TP/cmake-build-debug/libparallel_work_lib.dylib", RTLD_LAZY); // !!!!
+    library = dlopen("../cmake-build-debug/libparallel_work_lib.dylib", RTLD_LAZY); // try ../build/lib...
     if (!library) {
         fprintf(stderr, "library opening failed");
         ASSERT_TRUE(false);
@@ -28,11 +28,11 @@ TEST(Stress_test, stress_test_100mb) {
     // генерация файла случайных символов на 100 мегабайт
     generate_random_file(MEGABYTE_IN_BYTES * 100);
     const char* input_filename =
-            "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file_random";
+            "../test_data/generated_file_random";
     const char* output_filename_consecutive =
-            "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/stress_tests/results_consecutive";
+            "../test_data/test_results/stress_tests/results_consecutive";
     const char* output_filename_parallel =
-            "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/stress_tests/results_parallel";
+            "../test_data/test_results/stress_tests/results_parallel";
 
     // вызов последовательной и параллельной реализации
     work_from_file(input_filename, output_filename_consecutive);
@@ -62,9 +62,9 @@ TEST(Stress_test, stress_test_100mb) {
 }
 
 TEST(Test_work_from_file_func, small_file){
-    const char* input_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/small_file";
-    const char* output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/small_file_results";
-    const char* expected_output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/expected_results/small_file_results";
+    const char* input_filename = "../test_data/small_file";
+    const char* output_filename = "../test_data/test_results/small_file_results";
+    const char* expected_output_filename = "../test_data/expected_results/small_file_results";
     work_from_file(input_filename, output_filename);
 
 
@@ -91,9 +91,9 @@ TEST(Test_work_from_file_func, small_file){
 
 
 TEST(Test_work_from_file_func, medium_file) {
-    const char* input_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/book.txt";
-    const char* output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/book.txt_results";
-    const char* expected_output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/expected_results/book.txt_results";
+    const char* input_filename = "../test_data/book.txt";
+    const char* output_filename = "../test_data/test_results/book.txt_results";
+    const char* expected_output_filename = "../test_data/expected_results/book.txt_results";
     work_from_file(input_filename, output_filename);
 
 
@@ -126,9 +126,9 @@ TEST(Test_work_from_file_func, big_file_100mb_generated) {
      * - paste result from any algorythm
      * from test_data/test_results/generated_file_results to test_data/expected_results/generated_file_results
      */
-    const char* input_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file";
-    const char* output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/generated_file_results";
-    const char* expected_output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/expected_results/generated_file_results";
+    const char* input_filename = "../test_data/generated_file";
+    const char* output_filename = "../test_data/test_results/generated_file_results";
+    const char* expected_output_filename = "../test_data/expected_results/generated_file_results";
     work_from_file(input_filename, output_filename);
 
 
@@ -154,8 +154,8 @@ TEST(Test_work_from_file_func, big_file_100mb_generated) {
 }
 
 TEST(Test_work_from_file_func, incorrect_file_name) {
-    const char* input_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/unexisting_file";
-    const char* output_filename = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/test_results/unexisting_file_results";
+    const char* input_filename = "../test_data/unexisting_file";
+    const char* output_filename = "../test_data/test_results/unexisting_file_results";
 
     int result = work_from_file(input_filename, output_filename);
     const int EXPECTED = -1;

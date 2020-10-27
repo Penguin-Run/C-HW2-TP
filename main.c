@@ -1,6 +1,6 @@
 #include "include/IO_manager.h"
 
-#define FILENAME_INPUT "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/book.txt"
+#define FILENAME_INPUT "../test_data/book.txt"
 
 int main() {
 
