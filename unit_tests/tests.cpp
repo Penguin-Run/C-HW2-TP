@@ -10,7 +10,7 @@ extern "C" {
 #define MEGABYTE_IN_BYTES 1000000
 
 // work correctly with test_consecutive build
-TEST(Test_work_from_file_func, stress_test_100mb) {
+TEST(Stress_test, stress_test_100mb) {
     void *library; // объект для привязки внешней библиотеки
     int (*work_from_file_parallel)(const char* filename_input, const char* filename_output);
 

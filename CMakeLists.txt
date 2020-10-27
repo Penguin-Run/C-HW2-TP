@@ -96,10 +96,10 @@ endif()
 #----------------------------include-test-----------------------------
 
 add_executable(test_consecutive ${UNIT_TESTS})
-target_link_libraries(test_consecutive gtest gtest_main pthread ${STATIC_LIB})
+target_link_libraries(test_consecutive gtest gtest_main -ldl pthread ${STATIC_LIB})
 
 add_executable(test_parallel ${UNIT_TESTS})
-target_link_libraries(test_parallel gtest gtest_main pthread ${DYNAMIC_LIB})
+target_link_libraries(test_parallel gtest gtest_main -ldl pthread ${DYNAMIC_LIB})
 
 #----------------------------end-include-test-----------------------------
 
