@@ -109,5 +109,5 @@ add_executable(${PROJECT_NAME}_consecutive ${ALL_SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME}_consecutive ${STATIC_LIB})
 
 add_executable(${PROJECT_NAME}_parallel ${ALL_SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME}_parallel -lm pthread ${DYNAMIC_LIB})
+target_link_libraries(${PROJECT_NAME}_parallel -ldl -lm pthread ${DYNAMIC_LIB})
 
