@@ -4,8 +4,9 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <math.h>
-#include <sys/types.h>
-#include <sys/sysctl.h>
+
+// if running on MacOs
+// #include <sys/sysctl.h>
 
 #include <stdlib.h>
 
@@ -36,7 +37,32 @@ void* thread_routine(void* arg) {
     return arg;
 }
 
+// TODO: сделать разную работу функции на основе системы, на которой она запущена
 // возвращает количество ядер процессора системы
+// for running on linux
+int get_max_processes_of_system() {
+    int procCount = 0;
+    FILE *fp;
+
+    if( (fp = fopen("/proc/cpuinfo", "r")) )
+    {
+        char str[256];
+        while(fgets(str, sizeof str, fp)) {
+            if (!memcmp(str, "processor", 9)) procCount++;
+        }
+        fclose(fp);
+    }
+
+    if ( !procCount )
+    {
+        procCount=4;
+    }
+
+    return procCount;
+}
+
+/*
+// for running on MacOs
 int get_max_processes_of_system() {
     char* mib_id = "machdep.cpu.core_count"; // MIB ID to get number of CPU cores
     int cpu_cores = -1;
@@ -48,6 +74,7 @@ int get_max_processes_of_system() {
 
     return cpu_cores;
 }
+ */
 
 void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff) {
     printf( "PARALLEL\n");
