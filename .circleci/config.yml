@@ -26,6 +26,10 @@ jobs:
           command: 'ls -la && ls -la && cppcheck src/*  unit_tests/*'
 
       - run:
+          name: Start main.c with static Library With Valgrind
+          command: 'cd build && valgrind ./C_HW2_TP_consecutive'
+
+      - run:
           name: Start Tests Static Library With Valgrind
           command: 'cd build && valgrind ./test_consecutive --gtest_filter=* --gtest_color=no'
 
