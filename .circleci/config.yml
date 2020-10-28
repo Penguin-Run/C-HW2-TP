@@ -31,11 +31,11 @@ jobs:
 
       - run:
           name: Start Tests Static Library With Valgrind
-          command: 'cd build && valgrind ./test_consecutive --leak-check=full --show-leak-kinds=all --gtest_filter=* --gtest_color=no'
+          command: 'cd build && valgrind --leak-check=full --show-leak-kinds=all ./test_consecutive --gtest_filter=* --gtest_color=no'
 
       - run:
           name: Start Tests Dynamic Library With Valgrind
-          command: 'cd build && valgrind ./test_parallel --leak-check=full --show-leak-kinds=all --gtest_filter=* --gtest_color=no'
+          command: 'cd build && valgrind --leak-check=full --show-leak-kinds=all ./test_parallel --leak-check=full --show-leak-kinds=all --gtest_filter=* --gtest_color=no'
 
 
       - run:
