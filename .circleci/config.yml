@@ -40,4 +40,4 @@ jobs:
 
       - run:
           name: Gcovr
-          command: 'gcovr -r .'
+          command: 'cd src && gcovr -r .'
