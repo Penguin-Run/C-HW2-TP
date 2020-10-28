@@ -27,7 +27,7 @@ jobs:
 
       - run:
           name: Start main.c with static Library With Valgrind
-          command: 'cd build && valgrind --leak-check=full --show-leak-kinds=all ./C_HW2_TP_consecutive'
+          command: 'cd build && valgrind --leak-check=full --show-reachable=no ./C_HW2_TP_consecutive'
 
       - run:
           name: Start Tests Static Library With Valgrind
