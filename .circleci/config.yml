@@ -27,15 +27,15 @@ jobs:
 
       - run:
           name: Start main.c with static Library With Valgrind
-          command: 'cd build && valgrind -v --leak-check=full --show-leak-kinds=all ./C_HW2_TP_consecutive'
+          command: 'cd build && valgrind --gen-suppressions=all --leak-check=full --show-leak-kinds=all ./C_HW2_TP_consecutive'
 
       - run:
           name: Start Tests Static Library With Valgrind
-          command: 'cd build && valgrind -v --leak-check=full --show-leak-kinds=all ./test_consecutive --gtest_filter=* --gtest_color=no'
+          command: 'cd build && valgrind --gen-suppressions=all --leak-check=full --show-leak-kinds=all ./test_consecutive --gtest_filter=* --gtest_color=no'
 
       - run:
           name: Start Tests Dynamic Library With Valgrind
-          command: 'cd build && valgrind -v --leak-check=full --show-leak-kinds=all ./test_parallel --leak-check=full --show-leak-kinds=all --gtest_filter=* --gtest_color=no'
+          command: 'cd build && valgrind --gen-suppressions=all --leak-check=full --show-leak-kinds=all ./test_parallel --leak-check=full --show-leak-kinds=all --gtest_filter=* --gtest_color=no'
 
 
       - run:
