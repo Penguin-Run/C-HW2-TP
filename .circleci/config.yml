@@ -4,14 +4,13 @@ jobs:
       - image: "debian:stretch"
     steps:
       - checkout
-      - run: 'apt-get update'
       - run: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
-      - run: 'apt-get install -y gcc g++'
-      - run: 'apt-get install -y cppcheck'
-      - run: 'apt-get install -y valgrind'
-      - run: 'sudo apt-get install -y cmake'
-      - run: 'apt-get install -y gcovr'
-      - run: 'apt-get install -y git'
+      - run: 'apt-get update && apt-get install -y gcc g++'
+      - run: 'apt-get update && apt-get install -y cppcheck'
+      - run: 'apt-get update && apt-get install -y valgrind'
+      - run: 'apt-get update && sudo apt-get install -y cmake'
+      - run: 'apt-get update && apt-get install -y gcovr'
+      - run: 'apt-get update && apt-get install -y git'
 
 
       - run: ls -la && mkdir build && cd build &&
@@ -30,15 +29,15 @@ jobs:
           name: Start main.c with static Library With Valgrind
           command: 'cd build && valgrind --gen-suppressions=all --leak-check=full --show-leak-kinds=all ./C_HW2_TP_consecutive'
 
-#      - run:
-#          name: Start Tests Static Library With Valgrind
-#          command: 'cd build && valgrind --suppressions=../valgrind_supressions.supp --leak-check=full --show-leak-kinds=all ./test_consecutive --gtest_filter=* --gtest_color=no'
-#
-#      - run:
-#          name: Start Tests Dynamic Library With Valgrind
-#          command: 'cd build && valgrind --suppressions=../valgrind_supressions.supp --leak-check=full --show-leak-kinds=all ./test_parallel --leak-check=full --show-leak-kinds=all --gtest_filter=* --gtest_color=no'
-
+      - run:
+          name: Start Tests Static Library With Valgrind
+          command: 'cd build && valgrind --suppressions=../valgrind_supressions.supp --leak-check=full --show-leak-kinds=all ./test_consecutive --gtest_filter=* --gtest_color=no'
 
       - run:
-          name: Gcovr
-          command: 'pwd && gcovr -r .'
+          name: Start Tests Dynamic Library With Valgrind
+          command: 'cd build && valgrind --suppressions=../valgrind_supressions.supp --leak-check=full --show-leak-kinds=all ./test_parallel --leak-check=full --show-leak-kinds=all --gtest_filter=* --gtest_color=no'
+
+
+#      - run:
+#          name: Gcovr
+#          command: 'gcovr -r .'
