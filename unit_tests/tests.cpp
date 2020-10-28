@@ -14,14 +14,17 @@ TEST(Stress_test, stress_test_100mb) {
     void *library; // объект для привязки внешней библиотеки
     int (*work_from_file_parallel)(const char* filename_input, const char* filename_output);
 
-    library = dlopen("./libparallel_work_lib.so", RTLD_LAZY); // try ../build/lib...
+
+    // "./libparallel_work_lib.dylib" on mac
+    // "./libparallel_work_lib.so" on linux
+    library = dlopen("./libparallel_work_lib.so", RTLD_LAZY);
     if (!library) {
         fprintf(stderr, "library opening failed\n");
         ASSERT_TRUE(false);
     }
 
     // загрузка функции
-    void* func = dlsym(library, "work_from_file");
+    void* func = dlsym(library, "int_work_from_file");
     work_from_file_parallel = (int (*)(const char *, const char *)) func;
 
 
