@@ -24,11 +24,11 @@ char* load_file(const char* filename) {
                         0);
     if (region == MAP_FAILED) {
         printf("mmap failed\n");
-        close(fd);
+        fclose(f);
         return NULL;
     }
 
-    close(fd);
+    fclose(f);
     return region;
 }
 
