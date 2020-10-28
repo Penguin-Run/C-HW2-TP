@@ -44,7 +44,7 @@ void print_bytes(char* string) {
 
 // записывает случайную последовательность симолов размера bytes байтов в файл test_data/generated_file_random
 void generate_random_file(int num_of_bytes) {
-    char* generated_file_name = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file_random";
+    char* generated_file_name = "../test_data/generated_file_random";
     FILE* file = fopen(generated_file_name, "w");
 
     srand(time(0));
@@ -58,7 +58,7 @@ void generate_random_file(int num_of_bytes) {
 // записывает случайную последовательность симолов размера bytes байтов в файл test_data/generated_file
 // случайная последовательность повторяется
 void generate_file(int num_of_bytes) {
-    char* generated_file_name = "/Users/Ivan/TPark-SEM1/C-HW2-TP/test_data/generated_file";
+    char* generated_file_name = "../test_data/generated_file";
     FILE* file = fopen(generated_file_name, "w");
 
     for (int i = 0; i < num_of_bytes; i++) {
