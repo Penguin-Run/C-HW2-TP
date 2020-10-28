@@ -40,4 +40,4 @@ jobs:
 
       - run:
           name: Gcovr
-          command: 'gcovr -r ./src/*/* ./build'
+          command: 'gcovr -r ./src'
