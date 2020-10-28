@@ -36,11 +36,13 @@ TEST(Stress_test, stress_test_100mb) {
 
     // вызов последовательной и параллельной реализации
     work_from_file(input_filename, output_filename_consecutive);
+
     (*work_from_file_parallel)(input_filename, output_filename_parallel);
+    dlclose(library);
 
     std::ifstream consecutive_output(output_filename_consecutive);
     std::ifstream parallel_output(output_filename_parallel);
-    if (!consecutive_output.is_open() || !parallel_output.is_open())
+    if (!consecutive_output.is_open() || !parallel_output.is_open() || 1)
     {
         std::cerr << "TEST Failed to open file";
         consecutive_output.close();
@@ -57,8 +59,6 @@ TEST(Stress_test, stress_test_100mb) {
 
     consecutive_output.close();
     parallel_output.close();
-
-    dlclose(library);
 }
 
 TEST(Test_work_from_file_func, small_file){
