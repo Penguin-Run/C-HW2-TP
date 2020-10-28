@@ -24,7 +24,7 @@ TEST(Stress_test, stress_test_100mb) {
     }
 
     // загрузка функции
-    void* func = dlsym(library, "int_work_from_file");
+    void* func = dlsym(library, "work_from_file");
     work_from_file_parallel = (int (*)(const char *, const char *)) func;
 
 
