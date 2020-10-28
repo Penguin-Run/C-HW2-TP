@@ -7,7 +7,7 @@
 
 int main() {
 
-    work_from_file(FILENAME_INPUT, FILENAME_OUTPUT); // NULL == stdout by default
+    work_from_file(FILENAME_INPUT, NULL); // NULL == stdout by default
 
     return 0;
 }

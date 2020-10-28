@@ -69,6 +69,8 @@ void generate_file(int num_of_bytes) {
 }
 
 void print_result(const char* filename_output, int* diff_count) {
+    if (filename_output == NULL)
+        filename_output = "pass/incorrect/path";
     FILE* f = fopen(filename_output, "w");
     if (!f) {
         printf("Failed to open file for write the result. Using default output stream..\n");
