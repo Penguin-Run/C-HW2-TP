@@ -45,7 +45,7 @@ TEST(Stress_test, stress_test_100mb) {
 
     std::ifstream consecutive_output(output_filename_consecutive);
     std::ifstream parallel_output(output_filename_parallel);
-    if (!consecutive_output.is_open() || !parallel_output.is_open() || 1)
+    if (!consecutive_output.is_open() || !parallel_output.is_open())
     {
         std::cerr << "TEST Failed to open file";
         consecutive_output.close();
