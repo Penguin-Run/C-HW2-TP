@@ -26,6 +26,10 @@ jobs:
           command: 'ls -la && ls -la && cppcheck src/*  unit_tests/*'
 
       - run:
+          name: Find dynamic lib
+          command: 'find /root/project -name "*parallel_work_lib*"'
+
+      - run:
           name: Start main.c with static Library With Valgrind
           command: 'cd build && valgrind --gen-suppressions=all --leak-check=full --show-leak-kinds=all ./C_HW2_TP_consecutive'
 
