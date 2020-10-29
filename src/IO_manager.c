@@ -173,7 +173,6 @@ int work_from_file(const char* filename_input, const char* filename_output) {
     }
 
     int size = (int) get_file_size(filename_input);
-    printf("Size of file: %d\n", size);
 
     work(region, size, filename_output);
 
