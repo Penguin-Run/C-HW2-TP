@@ -3,7 +3,6 @@
 #include <dlfcn.h>
 #include <stdio.h>
 
-
 #define FILENAME_OUTPUT_CONSECUTIVE_BASE "../test_data/test_results/stress_tests/main_results_consecutive_"
 #define FILENAME_OUTPUT_PARALLEL_BASE "../test_data/test_results/stress_tests/main_results_parallel_"
 #define FILENAME_OUTPUT_BASE_SIZE 70
