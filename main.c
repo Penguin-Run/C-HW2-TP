@@ -15,7 +15,7 @@ int main() {
     int (*work_parallel)(char*, size_t, const char*);
     // "./libparallel_work_lib.dylib" on mac
     // "./libparallel_work_lib.so" on linux
-    library = dlopen("./libparallel_work_lib.dylib", RTLD_LAZY);
+    library = dlopen("./libparallel_work_lib.so", RTLD_LAZY);
     if (!library) {
         fprintf(stderr, "library opening failed\n");
         return -1;

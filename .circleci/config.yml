@@ -25,6 +25,11 @@ jobs:
           command: 'ls -la && ls -la && cppcheck src/*  unit_tests/*'
 
       - run:
+          name: Start main With Valgrind
+          command: 'cd build && valgrind --suppressions=../valgrind_supressions.supp --leak-check=full --show-leak-kinds=all ./C_HW2_TP'
+
+
+      - run:
           name: Start Tests Static Library With Valgrind
           command: 'cd build && valgrind --suppressions=../valgrind_supressions.supp --leak-check=full --show-leak-kinds=all ./test_consecutive --gtest_filter=* --gtest_color=no'
 
