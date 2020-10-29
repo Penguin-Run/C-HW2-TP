@@ -1,5 +1,10 @@
 #include "../include/IO_manager.h"
 
+#include <stdio.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <string.h>
 
 size_t get_file_size(const char* filename) {
     struct stat st;
@@ -41,6 +46,60 @@ void print_bytes(char* string) {
     }
     printf("\n");
 }
+
+int generate_unique_filename(const char* base, size_t base_size, size_t salt_size, char* result) {
+    if (result == NULL) {
+        fprintf(stderr, "NULL pointer passed in generate_unique_filename()\n");
+        return -1;
+    }
+
+    char* salt = malloc(salt_size * sizeof(char));
+    if (generate_random_sequence(salt, salt_size) == -1) {
+        fprintf(stderr, "generate_random_sequence error\n");
+        return -1;
+    }
+    strcpy(result, base);
+    strcat(result, salt);
+
+    free(salt);
+    return 0;
+}
+
+int compare_files(const char* file_1, const char* file_2) {
+    FILE* output_consecutive;
+    FILE* output_parallel;
+    if ((output_consecutive = fopen(file_1, "r")) == NULL) {
+        printf ("Cannot open file\n");
+        return -1;
+    }
+    if ((output_parallel = fopen(file_2, "r")) == NULL) {
+        printf ("Cannot open file\n");
+        fclose(output_consecutive);
+        return -1;
+    }
+
+    size_t line_length_consecutive = 35;
+    char* line_consecutive = malloc(line_length_consecutive * sizeof(char));
+    size_t line_length_parallel = 35;
+    char* line_parallel = malloc(line_length_parallel * sizeof(char));
+
+    while((getline(&line_consecutive, &line_length_consecutive, output_consecutive) != -1) && (getline(&line_parallel, &line_length_parallel, output_parallel) != -1)) {
+        if (strcmp(line_consecutive, line_parallel) != 0) {
+            fclose(output_consecutive);
+            fclose(output_parallel);
+            free(line_consecutive);
+            free(line_parallel);
+            return 1;
+        }
+    }
+
+    fclose(output_consecutive);
+    fclose(output_parallel);
+    free(line_consecutive);
+    free(line_parallel);
+    return 0;
+}
+
 
 // записывает случайную последовательность симолов размера bytes байтов в массив char
 int generate_random_sequence(char* sequence, int num_of_bytes) {

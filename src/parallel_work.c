@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <math.h>
 
+
 // if running on MacOs
 // #include <sys/sysctl.h>
 
@@ -77,7 +78,7 @@ int get_max_processes_of_system() {
  */
 
 void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff) {
-    printf( "PARALLEL\n");
+    printf( "PARALLEL running..\n");
     // ставлю количество потоков в зависимости от количества ядер процессора
     int num_of_threads = get_max_processes_of_system();
     if (num_of_threads == -1) {
