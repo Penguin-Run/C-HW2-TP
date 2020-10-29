@@ -6,7 +6,7 @@
 #include <math.h>
 
 #include <stdlib.h>
-#include <zconf.h>
+#include <unistd.h>
 
 typedef struct data_chunk {
     char* data;
@@ -65,7 +65,8 @@ void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff)
         err_flag = pthread_create(&threads[i], NULL, thread_routine, chunk);
         // check if thread_create call was successful
         if (err_flag != 0) {
-            printf("Main: caught error: %d\n", err_flag);
+            fprintf(stderr, "Main: caught error: %d\n", err_flag);
+            return;
         }
     }
 
@@ -74,7 +75,8 @@ void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff)
         void* return_value;
         int err_flag = pthread_join(threads[i], &return_value);
         if (err_flag != 0) {
-            printf("Main: caught error %d while joining thread\n", err_flag);
+            fprintf(stderr, "Main: caught error %d while joining thread\n", err_flag);
+            return;
         }
         data_chunk* chunk = (data_chunk*) return_value;
 
