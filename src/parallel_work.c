@@ -5,11 +5,8 @@
 #include <pthread.h>
 #include <math.h>
 
-
-// if running on MacOs
-// #include <sys/sysctl.h>
-
 #include <stdlib.h>
+#include <zconf.h>
 
 typedef struct data_chunk {
     char* data;
@@ -38,50 +35,17 @@ void* thread_routine(void* arg) {
     return arg;
 }
 
-// TODO: сделать разную работу функции на основе системы, на которой она запущена
 // возвращает количество ядер процессора системы
-// for running on linux
-int get_max_processes_of_system() {
-    int procCount = 0;
-    FILE *fp;
-
-    if( (fp = fopen("/proc/cpuinfo", "r")) )
-    {
-        char str[256];
-        while(fgets(str, sizeof str, fp)) {
-            if (!memcmp(str, "processor", 9)) procCount++;
-        }
-        fclose(fp);
-    }
-
-    if ( !procCount )
-    {
-        procCount=4;
-    }
-
-    return procCount;
+int get_max_processors_of_system() {
+    return (int) (sysconf(_SC_NPROCESSORS_ONLN) / 2 - 1) * 4;
 }
 
-/*
-// for running on MacOs
-int get_max_processes_of_system() {
-    char* mib_id = "machdep.cpu.core_count"; // MIB ID to get number of CPU cores
-    int cpu_cores = -1;
-    size_t len = sizeof(cpu_cores);
-    int if_success = sysctlbyname(mib_id, &cpu_cores, &len, NULL, 0);
-    if (if_success == -1) {
-        return -1;
-    }
-
-    return cpu_cores;
-}
- */
 
 void find_diff(char* region, size_t file_size, int* diff_count, int num_of_diff) {
     printf( "PARALLEL running..\n");
     // ставлю количество потоков в зависимости от количества ядер процессора
-    int num_of_threads = get_max_processes_of_system();
-    if (num_of_threads == -1) {
+    int num_of_threads = get_max_processors_of_system();
+    if (num_of_threads <= 0) {
         fprintf(stderr, "error while getting info about maximum number of processes in the system\n");
         return;
     }

@@ -7,7 +7,7 @@
 #define FILENAME_OUTPUT_PARALLEL_BASE "../test_data/test_results/stress_tests/main_results_parallel_"
 #define FILENAME_OUTPUT_BASE_SIZE 70
 #define FILENAME_OUTPUT_SALT_SIZE 5
-#define SEQUENCE_LENGTH 1000000
+#define SEQUENCE_LENGTH 10000
 
 int main() {
     // подключение динамической библиотеки с параллельной реализацией
