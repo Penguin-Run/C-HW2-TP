@@ -8,11 +8,15 @@
 #define FILENAME_OUTPUT_PARALLEL "../test_data/test_results/stress_tests/main_results_parallel"
 #define SEQUENCE_LENGTH 1000000
 
+// TODO: в конфиге поменять сборки и убрать запуск main
+
 int main() {
     // подключение динамической библиотеки с параллельной реализацией
     void *library; // объект для привязки внешней библиотеки
     int (*work_parallel)(char*, size_t, const char*);
 
+    // "./libparallel_work_lib.dylib" on mac
+    // "./libparallel_work_lib.so" on linux
     library = dlopen("./libparallel_work_lib.dylib", RTLD_LAZY);
     if (!library) {
         fprintf(stderr, "library opening failed\n");
@@ -49,15 +53,17 @@ int main() {
         return -1;
     }
 
-    size_t n = 35;
-    char* line_consecutive = malloc(n * sizeof(char));
+    size_t line_length_consecutive = 35;
+    char* line_consecutive = malloc(line_length_consecutive * sizeof(char));
 
-    size_t n2 = 35;
-    char* line_parallel = malloc(n2 * sizeof(char));
+    size_t line_length_parallel = 35;
+    char* line_parallel = malloc(line_length_parallel * sizeof(char));
 
-    while((getline(&line_consecutive, &n, output_consecutive) != -1) && (getline(&line_parallel, &n2, output_parallel) != -1)) {
+    while((getline(&line_consecutive, &line_length_consecutive, output_consecutive) != -1) && (getline(&line_parallel, &line_length_parallel, output_parallel) != -1)) {
         if (strcmp(line_consecutive, line_parallel) != 0) {
             fprintf(stderr, "Consistent and parallel algorithms results are not equal\n");
+            free(line_consecutive);
+            free(line_parallel);
             return 0;
         }
     }
