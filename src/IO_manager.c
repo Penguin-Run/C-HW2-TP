@@ -175,13 +175,8 @@ int work_from_file(const char* filename_input, const char* filename_output) {
     int size = (int) get_file_size(filename_input);
     printf("Size of file: %d\n", size);
 
-    int* diff_count = (int*) calloc(NUM_OF_DIFF_COUNT, sizeof(int));
+    work(region, size, filename_output);
 
-    find_diff(region, get_file_size(filename_input), diff_count, NUM_OF_DIFF_COUNT);
-
-    print_result(filename_output, diff_count);
-
-    free(diff_count);
     // очищение mmap памяти
     if (munmap(region, get_file_size(filename_input)) != 0) {
         fprintf(stderr, "munmap failed\n");
