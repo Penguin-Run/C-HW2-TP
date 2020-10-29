@@ -39,8 +39,8 @@ TEST(Stress_test, stress_test_100mb) {
 
     // вызов последовательной и параллельной реализации
     work_from_file(input_filename, output_filename_consecutive);
-
     (*work_from_file_parallel)(input_filename, output_filename_parallel);
+
     dlclose(library);
 
     std::ifstream consecutive_output(output_filename_consecutive);
@@ -123,7 +123,8 @@ TEST(Test_work_from_file_func, medium_file) {
 
 TEST(Test_work_from_file_func, big_file_100mb_generated) {
     // generate_file(MEGABYTE_IN_BYTES*100);
-    /*
+    /* works in docker image by default, because default output files are on github and new aren't generated
+     *
      * to generate new pseudo-random file and run test correctly:
      * - invoke generate_file(MEGABYTE_IN_BYTES*100); once
      * - paste result from any algorythm

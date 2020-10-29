@@ -28,8 +28,8 @@ set(HEADER_FILES_STATIC_LIB
         )
 
 add_library(${STATIC_LIB} STATIC ${SOURCE_FILES_STATIC_LIB})
-target_link_libraries(${STATIC_LIB}) # !!!
-target_include_directories(${STATIC_LIB} PUBLIC include) # !!!
+target_link_libraries(${STATIC_LIB})
+target_include_directories(${STATIC_LIB} PUBLIC include)
 
 #------------------------end-static-lib---------------------
 
@@ -46,9 +46,9 @@ set(HEADER_FILES_DYNAMIC_LIB
         include/IO_manager.h
         )
 
-set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON ) # !!!
+set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON )
 add_library(${DYNAMIC_LIB} SHARED ${SOURCE_FILES_DYNAMIC_LIB})
-target_link_libraries(${DYNAMIC_LIB}) # !!!
+target_link_libraries(${DYNAMIC_LIB})
 target_include_directories(${DYNAMIC_LIB} PUBLIC include)
 
 #------------------------end-dynamic-lib---------------------
@@ -88,10 +88,6 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
     include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
-# Now simply link against gtest or gtest_main as needed. Eg
-# add_executable(example example.cpp)
-# target_link_libraries(example gtest_main)
-# add_test(NAME example_test COMMAND example)
 
 #----------------------------include-test-----------------------------
 
@@ -105,9 +101,7 @@ target_link_libraries(test_parallel gtest gtest_main -ldl pthread ${DYNAMIC_LIB}
 
 #---------------------------end-google-tests---------------------------
 
-add_executable(${PROJECT_NAME}_consecutive ${ALL_SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME}_consecutive ${STATIC_LIB})
+add_executable(${PROJECT_NAME} ${ALL_SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} ${STATIC_LIB})
 
-add_executable(${PROJECT_NAME}_parallel ${ALL_SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME}_parallel -lm pthread ${DYNAMIC_LIB})
 

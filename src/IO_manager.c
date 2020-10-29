@@ -42,17 +42,19 @@ void print_bytes(char* string) {
     printf("\n");
 }
 
-// записывает случайную последовательность симолов размера bytes байтов в файл test_data/generated_file_random
-void generate_random_file(int num_of_bytes) {
-    char* generated_file_name = "../test_data/generated_file_random";
-    FILE* file = fopen(generated_file_name, "w");
+// записывает случайную последовательность симолов размера bytes байтов в массив char
+int generate_random_sequence(char* sequence, int num_of_bytes) {
+    if (sequence == NULL) {
+        fprintf(stderr, "NULL pointer passed\n");
+        return -1;
+    }
 
     srand(time(0));
     for (int i = 0; i < num_of_bytes; i++) {
         int random_symbol = (41 + rand() % 86); // from 41 to 126
-        fputc(random_symbol, file);
+        sequence[i] = (char)random_symbol;
     }
-    fclose(file);
+    return 0;
 }
 
 // записывает случайную последовательность симолов размера bytes байтов в файл test_data/generated_file
@@ -60,7 +62,28 @@ void generate_random_file(int num_of_bytes) {
 void generate_file(int num_of_bytes) {
     char* generated_file_name = "../test_data/generated_file";
     FILE* file = fopen(generated_file_name, "w");
+    if (!file) {
+        fprintf(stderr, "Failed to create file in generate_file()");
+        return;
+    }
 
+    for (int i = 0; i < num_of_bytes; i++) {
+        int random_symbol = (41 + rand() % 86); // from 41 to 126
+        fputc(random_symbol, file);
+    }
+    fclose(file);
+}
+
+// записывает случайную последовательность симолов размера bytes байтов в файл test_data/generated_file_random
+void generate_random_file(int num_of_bytes) {
+    char* generated_file_name = "../test_data/generated_file_random";
+    FILE* file = fopen(generated_file_name, "w");
+    if (!file) {
+        fprintf(stderr, "Failed to create file in generate_random_file()");
+        return;
+    }
+
+    srand(time(0));
     for (int i = 0; i < num_of_bytes; i++) {
         int random_symbol = (41 + rand() % 86); // from 41 to 126
         fputc(random_symbol, file);
@@ -105,6 +128,22 @@ int work_from_file(const char* filename_input, const char* filename_output) {
         fprintf(stderr, "munmap failed\n");
         return -1;
     }
+
+    return 0;
+}
+
+int work(char* region, size_t file_size, const char* filename_output) {
+    if (region == NULL) {
+        fprintf(stderr, "NULL pointer passed\n");
+        return -1;
+    }
+    int* diff_count = (int*) calloc(NUM_OF_DIFF_COUNT, sizeof(int));
+
+    find_diff(region, file_size, diff_count, NUM_OF_DIFF_COUNT);
+
+    print_result(filename_output, diff_count);
+
+    free(diff_count);
 
     return 0;
 }
