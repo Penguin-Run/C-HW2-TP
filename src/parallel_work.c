@@ -37,7 +37,7 @@ void* thread_routine(void* arg) {
 
 // возвращает количество ядер процессора системы
 int get_max_processors_of_system() {
-    return (int) (sysconf(_SC_NPROCESSORS_ONLN) / 2 - 1) * 4;
+    return (int) (sysconf(_SC_NPROCESSORS_ONLN) / 2) * 2;
 }
 
 
