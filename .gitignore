@@ -1,3 +1,12 @@
+test_data/test_results/stress_tests/
+
+test_data/generated_file
+test_data/generated_file_random
+
+.DS_Store
+.idea/
+cmake-build-debug/
+
 # Prerequisites
 *.d
 

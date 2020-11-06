@@ -1,0 +1,34 @@
+jobs:
+  build:
+    docker:
+      - image: "debian:stretch"
+    steps:
+      - checkout
+      - run: 'apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*'
+      - run: 'apt-get update && apt-get install -y gcc g++'
+      - run: 'apt-get update && apt-get install -y cppcheck'
+      - run: 'apt-get update && apt-get install -y valgrind'
+      - run: 'apt-get update && sudo apt-get install -y cmake'
+      - run: 'apt-get update && apt-get install -y gcovr'
+      - run: 'apt-get update && apt-get install -y git'
+
+
+      - run: ls -la && mkdir build && cd build &&
+          cmake .. && ls -la
+      - run: cmake --build build --target test_consecutive -- -j 6
+      - run: cmake --build build --target test_parallel -- -j 6
+      - run: cmake --build build --target C_HW2_TP -- -j 6
+
+
+      - run:
+          name: Start CppCheck
+          command: 'ls -la && ls -la && cppcheck src/*  unit_tests/*'
+
+      - run:
+          name: Start Tests Static Library With Valgrind
+          command: 'cd build && valgrind --suppressions=../valgrind_supressions.supp --leak-check=full --show-leak-kinds=all ./test_consecutive --gtest_filter=* --gtest_color=no'
+
+      - run:
+          name: Start Tests Dynamic Library With Valgrind
+          command: 'cd build && valgrind --suppressions=../valgrind_supressions.supp --leak-check=full --show-leak-kinds=all ./test_parallel --leak-check=full --show-leak-kinds=all --gtest_filter=* --gtest_color=no'
+
